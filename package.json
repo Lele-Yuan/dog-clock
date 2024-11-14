@@ -1,0 +1,60 @@
+{
+  "build": {
+    "appId": "com.dog-clock",
+    "productName": "dog-clock",
+    "copyright": "Copyright © 2021 Alaso",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "mac": {
+      "target": ["dmg","zip"],
+      "publish": ["github"]
+    },
+    "dmg": {
+      "background": "public/setup_background.jpg",
+      "icon": "build/icons/icon.icns",
+      "iconSize": 180,
+      "window": {
+        "width": 540,
+        "height": 380,
+        "x": 100,
+        "y": 100
+      }
+    },
+    "win": {
+      "target": ["msi","nsis"],
+      "icon": "build/icons/icon.icns"
+    },
+    "nsis": {
+      "oneClick": false,
+      "language": "2052",
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "name": "dog-clock",
+  "version": "1.0.1",
+  "main": "src/main/index.js",
+  "repository": {
+      "type": "git",
+      "url": "git@github.com:Lele-Yuan/dog-clock.git"
+  },
+  "author": "yuanlele",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build-icon": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
+    "pack": "electron-builder",
+    "release": "cross-env GH_TOKEN=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 electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^31.3.1",
+    "electron-builder": "^25.0.5",
+    "electron-icon-builder": "^2.0.1",
+    "electron-packager": "^17.1.2"
+  },
+  "dependencies": {
+    "asar": "^3.2.0"
+  }
+}
