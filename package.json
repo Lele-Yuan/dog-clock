@@ -7,9 +7,20 @@
       "output": "dist",
       "buildResources": "build"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Lele-Yuan",
+        "repo": "dog-clock",
+        "token": "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",
+        "releaseType": "release"
+      }
+    ],
     "mac": {
-      "target": ["dmg","zip"],
-      "publish": ["github"]
+      "target": [
+        "dmg",
+        "zip"
+      ]
     },
     "dmg": {
       "background": "public/setup_background.jpg",
@@ -23,7 +34,10 @@
       }
     },
     "win": {
-      "target": ["msi","nsis"],
+      "target": [
+        "msi",
+        "nsis"
+      ],
       "icon": "build/icons/icon.icns"
     },
     "nsis": {
@@ -34,18 +48,19 @@
     }
   },
   "name": "dog-clock",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "main": "src/main/index.js",
   "repository": {
-      "type": "git",
-      "url": "git@github.com:Lele-Yuan/dog-clock.git"
+    "type": "git",
+    "url": "git@github.com:Lele-Yuan/dog-clock.git"
   },
   "author": "yuanlele",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
     "build-icon": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
-    "pack": "electron-builder",
+    "build": "electron-builder",
+    "build-release": "electron-builder --config --publish always",
     "release": "cross-env GH_TOKEN=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 electron-builder"
   },
   "devDependencies": {
@@ -55,6 +70,6 @@
     "electron-packager": "^17.1.2"
   },
   "dependencies": {
-    "asar": "^3.2.0"
+    "electron-updater": "^6.3.9"
   }
 }

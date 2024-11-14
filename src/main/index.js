@@ -1,5 +1,6 @@
 const path = require('path');
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow } = require('electron');
+const { checkUpdate } = require('./checkUpdate');
 
 let mainWindow
 
@@ -34,7 +35,8 @@ if (!gotTheLock) {
 app.on('open-url', (event, url) => handleSchemeWakeup(url))
 
 app.whenReady().then(() => {
-    createWindow()
+    createWindow();
+    checkUpdate();
 })
 
 function createWindow() {
