@@ -48,7 +48,7 @@
     }
   },
   "name": "dog-clock",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "src/main/index.js",
   "repository": {
     "type": "git",
