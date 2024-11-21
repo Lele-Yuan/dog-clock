@@ -26,7 +26,6 @@ function checkUpdate() {
         }).then((buttonIndex) => {
             if (buttonIndex.response == 0) {  //选择是，则退出程序，安装新版本
                 autoUpdater.quitAndInstall()
-                app.quit()
             }
         })
     })
