@@ -12,9 +12,53 @@
             padding: 0;
         }
     </style>
+
+    <script>
+        window.onload = () => {
+            const { ipcRender } = window.electron;
+            if (ipcRender) {
+                document.getElementById('ipcRender-ready').innerText = 'true';
+            }
+
+            ipcRender.receive('downloadProgress', data => {
+                console.log('data: download-progress', data);
+                const progress = parseInt(data.percent, 10);
+                // setProgress(progress);
+                document.getElementById('progress').innerText = `下载进度：${progress}%`;
+            });
+            ipcRender.receive("isUpdateNow", () => {
+                ipcRender.send("isUpdateNow");
+            });
+            ipcRender.receive("version", (version) => {
+                console.log('version', version);
+                // setVersion(version);
+                document.getElementById('version').innerText = version;
+            });
+            ipcRender.send('checkAppVersion');
+            ipcRender.receive('updateAvailable', data => {
+                console.log('data-updateAvailable', data);
+            });
+            ipcRender.receive('message', data => {
+                console.log('data: message', data);
+                // setText(data);
+                document.getElementById('text').innerText = data;
+            });
+            ipcRender.send('checkForUpdate');
+            if (ipcRender) {
+                document.getElementById('text').innerText = 'checkForUpdate';
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- <webview src="https://juejin.cn/user/4476867080110957"></webview> -->
-    <webview src="https://www.electronjs.org/zh/"></webview>
+    <!-- <webview src="https://www.electronjs.org/zh/"></webview> -->
+
+    <div>
+        <p>current app version: <span id="version"></span></p>
+        <p>ipcRender is ready: <span id="ipcRender-ready"></span></p>
+        <p id="text"></p>
+        <p id="progress"></p>
+    </div>
 </body>
 </html>

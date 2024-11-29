@@ -1,5 +1,7 @@
-const { dialog, app } = require('electron')
+const { dialog } = require('electron')
 const { autoUpdater } = require('electron-updater')
+const path = require('path')
+const isDev = import('electron-is-dev');
 
 // 定义返回给渲染层的相关提示文案
 const message = {
@@ -11,18 +13,33 @@ const message = {
     updateNotAva: '现在使用的就是最新版本，不用更新',
 };
 
-// 主进程跟渲染进程通信
-// const sendUpdateMessage = (text) => {
-//     // 发送消息给渲染进程
-//     mainWindow.webContents.send('message', text);
-// };
+autoUpdater.logger = require('electron-log');
+autoUpdater.logger.transports.file.level = 'info';
 
-function checkUpdate() {
+// 这里是为了在本地做应用升级测试使用
+if (isDev) {
+    autoUpdater.forceDevUpdateConfig = true;
+    console.log('__dirname: ', __dirname);
+    autoUpdater.updateConfigPath = path.join(__dirname, './dev-app-update.yml');
+
+    // 默认会自动下载新版本，如果不想自动下载，设置autoUpdater.autoDownload = false
     // 设置自动下载为false，这样就不会自动下载
     autoUpdater.autoDownload = false;
+    autoUpdater.setFeedURL({
+        provider: 'generic',
+        url: 'http://localhost:8060/'
+    });
+}
+
+function checkUpdate() {
+    // 主进程跟渲染进程通信
+    // const sendUpdateMessage = (text) => {
+    //     // 发送消息给渲染进程
+    //     mainWindow.webContents.send('message', text);
+    // };
 
     // 检测更新
-    autoUpdater.checkForUpdates()
+    autoUpdater.checkForUpdates();
 
     // 检测是否需要更新
     autoUpdater.on('checking-for-update', () => {
@@ -57,21 +74,22 @@ function checkUpdate() {
     // 更新下载进度
     autoUpdater.on('download-progress', (progress) => {
         // 直接把当前的下载进度发送给渲染进程即可，有渲染层自己选择如何做展示
-        mainWindow.webContents.send('downloadProgress', progress);
+        // mainWindow.webContents.send('downloadProgress', progress);
+        console.log(`下载进度：${progress}`);
     });
-
-    // 默认会自动下载新版本，如果不想自动下载，设置autoUpdater.autoDownload = false
 
     // 监听'update-downloaded'事件，新版本下载完成时触发
     autoUpdater.on('update-downloaded', () => {
         // 给用户一个提示，然后重启应用；或者直接重启也可以，只是这样会显得很突兀
-    dialog.showMessageBox({
-        title: '安装更新',
-        message: '更新下载完毕，应用将重启并进行安装'
-    }).then(() => {
-        // 退出并安装应用
-        setImmediate(autoUpdater.quitAndInstall);
-    });
+        dialog.showMessageBox({
+            title: '安装更新',
+            message: '更新下载完毕，应用将重启并进行安装'
+        }).then((res) => {
+            console.log('安装更新', res);
+            // 退出并安装应用
+            // setTimeout(() => autoUpdater.quitAndInstall());
+            // autoUpdater.quitAndInstall();
+        });
     })
 }
 
