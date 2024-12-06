@@ -1,26 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8">
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello World!</title>
+    <link rel="stylesheet" href="./header.css">
+    <script src="./header.js"></script>
     <style>
-      body,html {
-        height: 100%;
-      }
-      .main {
-        background: #ffe4c4;
-        height: 110vh;
-      }
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .content {
+            height: calc(100vh - 32px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main {
+            background: #b6b0b9;
+        }
     </style>
-  </head>
-  <body>
-    <div class="main">
-      <h1>Hello World!</h1>
-      We are using Node.js <span id="node-version"></span>,
-      Chromium <span id="chrome-version"></span>,
-      and Electron <span id="electron-version"></span>.
+</head>
+
+<body>
+    <div class="mac-control-buttons" data-mousemove-disabled>
+        <span class="mac-close" id="control-buttons-close" title="按【command + w】退出"></span>
+        <span class="mac-minimize" id="control-buttons-minimize"></span>
+        <span class="mac-maximize" id="control-buttons-maximize"></span>
     </div>
-  </body>
+
+    <div class="content">
+        <div class="main">
+            <h1>Hello World!</h1>
+            <button id="open-new-window">打开新窗口</button>
+            <button id="open-update-window">检测更新</button>
+            We are using Node.js <span id="node-version"></span>,
+            Chromium <span id="chrome-version"></span>,
+            and Electron <span id="electron-version"></span>.
+        </div>
+        <webview src="https://juejin.cn/user/4476867080110957" style="display:inline-flex; width:100%; flex: 1;">
+    </div>
+
+</body>
+<script>
+    const { ipcRendererSend } = window.electron
+    const buttonDom = document.getElementById('open-new-window')
+    buttonDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:loadUrl', 'https://www.electronjs.org/zh/')
+    })
+    const updateButtonDom = document.getElementById('open-update-window')
+    updateButtonDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:loadUrl')
+    })
+</script>
 </html>

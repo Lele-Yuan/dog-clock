@@ -1,4 +1,14 @@
 {
+  "name": "dog-clock",
+  "productName": "Dog-Clock",
+  "version": "1.0.2",
+  "main": "src/main/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Lele-Yuan/dog-clock.git"
+  },
+  "author": "yuanlele",
+  "license": "MIT",
   "build": {
     "appId": "com.dog-clock",
     "productName": "dog-clock",
@@ -47,15 +57,6 @@
       "allowToChangeInstallationDirectory": true
     }
   },
-  "name": "dog-clock",
-  "version": "1.0.2",
-  "main": "src/main/index.js",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:Lele-Yuan/dog-clock.git"
-  },
-  "author": "yuanlele",
-  "license": "MIT",
   "scripts": {
     "start": "npx nodemon --watch index.js --exec electron .",
     "build-icon": "electron-icon-builder --input=./public/icon.png --output=build --flatten",

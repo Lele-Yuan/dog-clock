@@ -35,7 +35,7 @@ function checkUpdate() {
     // 主进程跟渲染进程通信
     // const sendUpdateMessage = (text) => {
     //     // 发送消息给渲染进程
-    //     mainWindow.webContents.send('message', text);
+    //     win.webContents.send('message', text);
     // };
 
     // 检测更新
@@ -74,7 +74,7 @@ function checkUpdate() {
     // 更新下载进度
     autoUpdater.on('download-progress', (progress) => {
         // 直接把当前的下载进度发送给渲染进程即可，有渲染层自己选择如何做展示
-        // mainWindow.webContents.send('downloadProgress', progress);
+        // win.webContents.send('downloadProgress', progress);
         console.log(`下载进度：${progress}`);
     });
 

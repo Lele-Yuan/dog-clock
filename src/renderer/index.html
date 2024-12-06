@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Electron App</title>
+    <title>Dog Clock</title>
     <style>
         html, body, webview {
             width: 100%;
@@ -15,36 +15,36 @@
 
     <script>
         window.onload = () => {
-            const { ipcRender } = window.electron;
-            if (ipcRender) {
+            const { ipcRendereReceive, ipcRendererSend } = window.electron;
+            if (ipcRendereReceive) {
                 document.getElementById('ipcRender-ready').innerText = 'true';
             }
 
-            ipcRender.receive('downloadProgress', data => {
+            ipcRendereReceive('downloadProgress', data => {
                 console.log('data: download-progress', data);
                 const progress = parseInt(data.percent, 10);
                 // setProgress(progress);
                 document.getElementById('progress').innerText = `下载进度：${progress}%`;
             });
-            ipcRender.receive("isUpdateNow", () => {
-                ipcRender.send("isUpdateNow");
+            ipcRendereReceive("isUpdateNow", () => {
+                ipcRendererSend("isUpdateNow");
             });
-            ipcRender.receive("version", (version) => {
+            ipcRendereReceive("version", (version) => {
                 console.log('version', version);
                 // setVersion(version);
                 document.getElementById('version').innerText = version;
             });
-            ipcRender.send('checkAppVersion');
-            ipcRender.receive('updateAvailable', data => {
+            ipcRendererSend('checkAppVersion');
+            ipcRendereReceive('updateAvailable', data => {
                 console.log('data-updateAvailable', data);
             });
-            ipcRender.receive('message', data => {
+            ipcRendereReceive('message', data => {
                 console.log('data: message', data);
                 // setText(data);
                 document.getElementById('text').innerText = data;
             });
-            ipcRender.send('checkForUpdate');
-            if (ipcRender) {
+            ipcRendererSend('checkForUpdate');
+            if (ipcRendereReceive) {
                 document.getElementById('text').innerText = 'checkForUpdate';
             }
         }

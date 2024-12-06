@@ -6,10 +6,10 @@ const { autoUpdater } = require('electron-updater');
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
-let mainWindow;
+let win;
 
 const createWindow = () => {
-    mainWindow = new BrowserWindow({
+    win = new BrowserWindow({
         width: 802,
         height: 824,
         useContentSize: false,
@@ -24,18 +24,18 @@ const createWindow = () => {
     });
 
     if (isDev) {
-        // mainWindow.webContents.openDevTools();
+        // win.webContents.openDevTools();
     }
 
     const urlLocation = `file://${path.join(__dirname, './src/renderer/index.html')}`
 
-    mainWindow.loadURL(urlLocation);
+    win.loadURL(urlLocation);
 
-    mainWindow.on('closed', () => {
-        mainWindow = null
+    win.on('closed', () => {
+        win = null
     });
 
-    return mainWindow;
+    return win;
 };
 
 app.on('ready', createWindow);
@@ -80,7 +80,7 @@ autoUpdater.on('error', (error) => {
 });
 autoUpdater.on('checking-for-update', () => {
     console.log('Checking for update...');
-    // mainWindow.webContents.send('checking-for-update', 'Checking for update...');
+    // win.webContents.send('checking-for-update', 'Checking for update...');
     sendUpdateMessage(message.checking);
 });
 autoUpdater.on('update-available', () => {
@@ -91,7 +91,7 @@ autoUpdater.on('update-available', () => {
         buttons: ['是', '否']
     }).then(({ response }) => {
         if (response === 0) {
-            // mainWindow.webContents.send('updateAvailable', '点击了是');
+            // win.webContents.send('updateAvailable', '点击了是');
             autoUpdater.downloadUpdate();
             sendUpdateMessage(message.updateAva);
         }
@@ -105,7 +105,7 @@ autoUpdater.on('update-not-available', () => {
     //     title: '没有新版本',
     //     message: '当前已经是最新版本'
     // });
-    // mainWindow.webContents.send('update-not-available', '没有新版本');
+    // win.webContents.send('update-not-available', '没有新版本');
     sendUpdateMessage(message.updateNotAva);
 });
 autoUpdater.on('download-progress', (progress) => {
@@ -113,8 +113,8 @@ autoUpdater.on('download-progress', (progress) => {
     logMessage = logMessage + ' - Download ' + progress.percent + '%';
     logMessage = logMessage + ' (' + progress.transferred + '/' + progress.total + ')';
     console.log(logMessage);
-    mainWindow.webContents.send('downloadProgress', progress);
-    mainWindow.setProgressBar(progress.percent / 100);
+    win.webContents.send('downloadProgress', progress);
+    win.setProgressBar(progress.percent / 100);
 });
 autoUpdater.on('update-downloaded', () => {
     dialog.showMessageBox({
@@ -133,18 +133,18 @@ autoUpdater.on('update-downloaded', () => {
 //         autoUpdater.quitAndInstall();
 //     });
 
-//     mainWindow.webContents.send('isUpdateNow')
+//     win.webContents.send('isUpdateNow')
 // });
 
 ipcMain.on('render-send', (event, arg) => {
     // console.log('event', event);
     console.log('arg', arg);
-    dialog.showOpenDialog(mainWindow, {
+    dialog.showOpenDialog(win, {
         properties: ['openFile', 'openDirectory']
     }).then(result => {
         console.log(result.canceled)
         console.log(result.filePaths)
-        mainWindow.webContents.send('ping', {
+        win.webContents.send('ping', {
             canceled: result.canceled,
             filePaths: result.filePaths
         });
@@ -158,7 +158,7 @@ ipcMain.on('render-send', (event, arg) => {
     //     buttons: ['是', '否']
     // }).then(({ response }) => {
     //     if (response === 0) {
-    //         mainWindow.webContents.send('updateAvailable', '点击了是');
+    //         win.webContents.send('updateAvailable', '点击了是');
     //         sendUpdateMessage(message.updateAva);
     //         autoUpdater.downloadUpdate();
     //     }
@@ -172,9 +172,9 @@ ipcMain.on('checkForUpdate', () => {
 });
 
 function sendUpdateMessage(text) {
-    mainWindow.webContents.send('message', text)
+    win.webContents.send('message', text)
 }
 
 ipcMain.on('checkAppVersion', () => {
-    mainWindow.webContents.send('version', app.getVersion());
+    win.webContents.send('version', app.getVersion());
 });

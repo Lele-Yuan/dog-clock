@@ -1,43 +1,22 @@
 const path = require('path');
 const { app, BrowserWindow, screen } = require('electron');
-const { checkUpdate } = require('./checkUpdate');
+// const { checkUpdate } = require('./checkUpdate');
+const { createWindowMenus } = require('./setWindowMenu');
+const { appName, protocol, isMac, iconPath } = require('./constant');
+const { createWindowTray } = require('./setWindowTray');
+const { initIpcMainListener } = require('./ipcMainListener');
 
-let mainWindow
+let win
 
-const protocol = 'dog-clock'
-const scheme = `${protocol}://`
 // 注册协议
 app.setAsDefaultProtocolClient(protocol);
 
 let urlParams = {}
 
-handleSchemeWakeup(process.argv)
-// 防止多次启动
-const gotTheLock = app.requestSingleInstanceLock()
-if (!gotTheLock) {
-    app.quit()
-} else {
-    app.on('second-instance', (event, argv) => {
-        // 从最小化窗口恢复
-        mainWindow.restore()
-        // 从后台显示
-        mainWindow.show()
-        handleSchemeWakeup(argv)
-
-        // // 如果发现 dog-clock:// 前缀，说明是通过 scheme 唤起
-        // const url = process.argv.find(v => v.startsWith(scheme))
-        // if (url) {
-        //     console.log('通过 scheme 唤起', url)
-        // }
-    })
-}
-
-app.on('open-url', (event, url) => handleSchemeWakeup(url))
-
 function createWindow() {
-
-    // 获取屏幕的宽度
     const screenWidth = screen.getPrimaryDisplay().workAreaSize.width;
+    const screehHeight = screen.getPrimaryDisplay().workAreaSize.height;
+    // 获取屏幕的宽度
     // 定义窗口的宽度
     const windowWidth = 800; // 根据你的需求设置窗口宽度
     // 计算窗口的初始 x 坐标（屏幕宽度 - 窗口宽度）
@@ -45,42 +24,49 @@ function createWindow() {
 
     const width = parseInt(urlParams.width) || windowWidth
     const height = parseInt(urlParams.height) || 600
-    if (mainWindow) {
-        mainWindow.setSize(width, height)
+    if (win) {
+        win.setSize(width, height)
     } else {
-        mainWindow = new BrowserWindow({
+        win = new BrowserWindow({
             width,
-            height, //设置窗口宽高
-            // x: initialX,
-            // y: 0,
-            // resizable: true,
-            // backgroundColor: '#2e2c29',
-            // // titleBarStyle: 'hidden',
-            // // frame: false,
+            height, // 设置窗口宽高
+            x: initialX,
+            y: 0, // 设置窗口的初始位置为右上角
+            resizable: false, // 不允许用户调整窗口大小
+            backgroundColor: '#917a68', // 设置窗口的背景色
+            // titleBarStyle: 'hiddenInset', // 隐藏标题栏
+            // titleBarStyle: 'hidden',
+            // trafficLightPosition: { x: 100, y: 100 },
+            frame: false, // 隐藏标题栏
             // fullscreenable: false,
-            // icon: __dirname + '../../build/icons/icon',
-            // hiddenInMissionControl: true,
+            // icon: path.join(__dirname, '../../build/icons/32x32.png'),
+            hiddenInMissionControl: true,
             // title: 'anc',
             // vibrancy: 'appearance-based',
             webPreferences: {
-                // webviewTag: true, // 需要添加webviewTag属性,否则webview标签无法使用
+                webviewTag: true, // 需要添加webviewTag属性,否则 webview 标签无法使用
                 contentSecurityPolicy: `style-src`,
+                // contextIsolation: false,
+                preload: path.join(__dirname, 'preloadTest.js') // 预加载脚本
             },
         })
-        // mainWindow.loadURL('https://juejin.cn/user/4476867080110957')
-        mainWindow.loadFile(path.join(__dirname, '../renderer/helloworld.html'))
+        // win.loadURL('https://juejin.cn/user/4476867080110957') // 加载页面
+        win.loadFile(path.join(__dirname, '../renderer/helloworld.html'))
     }
 }
 
-function handleSchemeWakeup(argv) {
-    const url = [].concat(argv).find((v) => v.startsWith(scheme))
-    if (!url) return
-    const searchParams = new URLSearchParams(url.slice(scheme.length))
-    urlParams = Object.fromEntries(searchParams.entries())
-    if (app.isReady()) createWindow()
-}
+app.setName(appName);
+app.dock.setIcon(iconPath);
+initIpcMainListener(win);
 
 app.whenReady().then(() => {
     createWindow();
-    checkUpdate();
+    createWindowMenus();
+    createWindowTray(win);
+    // checkUpdate();
 })
+
+app.on('window-all-closed', () => {
+    // 关闭最后一个页面后退出
+    isMac ? app.dock.hide() : app.quit();
+});
