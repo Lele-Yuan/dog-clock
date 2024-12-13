@@ -16,6 +16,10 @@
             margin: 0;
         }
 
+        body[data-theme="dark"] {
+            color: #fcfcfc;
+        }
+
         .content {
             height: calc(100vh - 32px);
             overflow: hidden;
@@ -24,7 +28,17 @@
         }
 
         .main {
-            background: #b6b0b9;
+            padding: 0 16px;
+        }
+
+        .iframe-webview {
+            display: flex;
+            flex: 1;
+        }
+
+        .iframe, .webview {
+            width: 50%;
+            padding: 10px;
         }
     </style>
 </head>
@@ -39,25 +53,104 @@
     <div class="content">
         <div class="main">
             <h1>Hello World!</h1>
-            <button id="open-new-window">打开新窗口</button>
-            <button id="open-update-window">检测更新</button>
+            <p>
+                <button id="open-new-window">打开新窗口</button>
+                <button id="open-new-scheme">打开dumail窗口</button>
+                <a href="infoflow://APICenter?data=eyJBUElOYW1lIjoiQmRIaUpzLmFwcG5hdGl2ZS53ZWJ2aWV3LmxvYWRVUkwiLCJ2ZXJzaW9uIjoiMzAiLCJkYXRhIjp7InR5cGUiOiJzZXBhcmF0ZSIsImRlZmF1bHRTaXplIjoiMTEwMCw5MDAiLCJ1cmwiOiJodHRwczovL3hwcC5pbS5iYWlkdS5jb20vbWFpbC1oNS9tYWlsL2JkbWFpbC1mcm9udD9oaV9kZWZhdWx0c2l6ZT0xMTAwLDkwMCZjYWNoZV9zaXplPXRydWUmY2FjaGVfc2l6ZV9rZXk9ZHVFbWFpbHMmaGlfbmF2aV9zdHlsZT0yJmNhY2hlX3NpemVfa2V5PWR1RW1haWxzIn19">百度邮箱</a>
+                <button id="open-update-window">检测更新</button>
+                <button id="close-remind">关闭提醒</button>
+            </p>
             We are using Node.js <span id="node-version"></span>,
             Chromium <span id="chrome-version"></span>,
             and Electron <span id="electron-version"></span>.
+            <p>
+                <button id="get-windows">打开了几个窗口</button><span class="windows-count"></span>
+                <div><i class="main-something"></i></div>
+            </p>
+            <p>
+                <label for="themechange">选择主题：</label>
+                <select name="themechange" id="themeChange">
+                    <option value="system">跟随系统</option>
+                    <option value="light">浅色</option>
+                    <option value="dark">深色</option>
+                </select>
+                <button id="get-theme">获取当前主题</button>
+                <span class="theme"></span>
+            </p>
         </div>
-        <webview src="https://juejin.cn/user/4476867080110957" style="display:inline-flex; width:100%; flex: 1;">
+        <div class="iframe-webview">
+            <div class="iframe">
+                <p>👇 这是一个 iframe</p>
+                <iframe src="https://juejin.cn/user/4476867080110957" frameborder="0" style="width:100%; height: 100%;"></iframe>
+            </div>
+            <div class="webview">
+                <p>👇 这是一个 webview</p>
+                <webview src="https://juejin.cn/user/4476867080110957" style="width:100%; height: 100%;">
+            </div>
+        </div>
     </div>
 
 </body>
 <script>
-    const { ipcRendererSend } = window.electron
-    const buttonDom = document.getElementById('open-new-window')
-    buttonDom.addEventListener('click', () => {
+    const { ipcRendererSend, ipcRendereReceive, ipcRendereInvoke } = window.electron
+    const openWindowButtonDom = document.getElementById('open-new-window')
+    const openSchemeButtonDom = document.getElementById('open-new-scheme')
+    openWindowButtonDom.addEventListener('click', () => {
         ipcRendererSend('mainWindow:loadUrl', 'https://www.electronjs.org/zh/')
+    })
+    openSchemeButtonDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:loadUrl', 'infoflow://APICenter?data=eyJBUElOYW1lIjoiQmRIaUpzLmFwcG5hdGl2ZS53ZWJ2aWV3LmxvYWRVUkwiLCJ2ZXJzaW9uIjoiMzAiLCJkYXRhIjp7InR5cGUiOiJzZXBhcmF0ZSIsImRlZmF1bHRTaXplIjoiMTEwMCw5MDAiLCJ1cmwiOiJodHRwczovL3hwcC5pbS5iYWlkdS5jb20vbWFpbC1oNS9tYWlsL2JkbWFpbC1mcm9udD9oaV9kZWZhdWx0c2l6ZT0xMTAwLDkwMCZjYWNoZV9zaXplPXRydWUmY2FjaGVfc2l6ZV9rZXk9ZHVFbWFpbHMmaGlfbmF2aV9zdHlsZT0yJmNhY2hlX3NpemVfa2V5PWR1RW1haWxzIn19')
     })
     const updateButtonDom = document.getElementById('open-update-window')
     updateButtonDom.addEventListener('click', () => {
         ipcRendererSend('mainWindow:loadUrl')
     })
+    const closeRemind = document.getElementById('close-remind')
+    closeRemind.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:closeRemind')
+    })
+    const getThemeDom = document.getElementById('get-theme')
+    getThemeDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:getTheme')
+    })
+
+    const themeTxt = {
+        light: '浅色',
+        dark: '深色',
+        system: '跟随系统',
+    }
+    ipcRendereReceive('message:theme', (theme) => {
+        console.log('message:theme: ', theme);
+        document.getElementById('themeChange').value = theme
+        document.querySelector('.theme').innerHTML = 
+            `<span>当前主题：${themeTxt[decodeURIComponent(theme)]}</span>`
+    })
+
+    const themeChangeDom = document.getElementById('themeChange')
+    themeChangeDom.addEventListener('change', (e) => {
+        ipcRendereInvoke('mainWindow:changeTheme', e.target.value).then((theme) => {
+            document.querySelector('.theme').innerHTML = 
+                `<span>当前主题：${themeTxt[decodeURIComponent(theme)]}</span>`
+        })
+    })
+
+    ipcRendereReceive('message:changeTheme', (theme) => {
+        console.log('message:changeTheme: ', theme);
+        document.body.dataset.theme = theme
+    })
+
+    const getCountDom = document.getElementById('get-windows')
+    getCountDom.addEventListener('click', (e) => {
+        ipcRendereInvoke('mainWindow:windowsCount').then((count) => {
+            document.querySelector('.windows-count').innerHTML = count;
+        })
+    })
+    
+    ipcRendereReceive('message:something', (message) => {
+        console.log('message:something: ', message);
+        document.querySelector('.main-something').innerHTML = 
+            `主进程发来的消息：${message}</span>`
+    })
+
 </script>
 </html>

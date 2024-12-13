@@ -1,8 +1,19 @@
+body[data-theme="light"] {
+    .mac-control-buttons {
+        background: #F2F4F7;
+    }
+}
+body[data-theme="dark"] {
+    .mac-control-buttons {
+        background: #292929;
+    }
+}
+
 .mac-control-buttons {
     display: flex;
     align-items: center;
     padding: 10px;
-    background: #1e242d;
+    background: #BF1304;
     -webkit-app-region: drag;
 }
 

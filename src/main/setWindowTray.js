@@ -1,21 +1,59 @@
-const { app, Menu, Tray } = require("electron");
+const { app, Menu, Tray, BrowserWindow } = require("electron");
 const path = require('path');
+const { createRemindWindow } = require('./remindWindow');
+let remindWin;
+exports.listenRemind = (tray) => {
+        
+    function checkTimeAndNotify() {
+        // 获取当前时间
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        console.log('hours: ', hours, 'minutes: ', minutes, 'remindWin: ', remindWin);
 
-exports.createWindowTray = (win) => {
+        // 检查当前时间是否为晚上8点（20:00）
+        if (hours === 17 && minutes === 47 && !remindWin) {
+            const { x, y, width, height } = tray?.getBounds()
+            console.log('createRemindWindow x, y: ', x, y); // 这里不清楚为啥是 x, y:  0 982
+            remindWin = createRemindWindow(tray)
+            remindWin.setPosition(x - (200 - width) / 2, height)
+
+            global.remindWin = remindWin
+
+            remindWin.on('closed', () => { global.remindWin = null })
+        }
+    }
+
+    // 设置一个定时器，每分钟检查一次时间
+    timmer = setInterval(checkTimeAndNotify, 20000);
+    // 立即调用一次，以防程序恰好在8点启动
+    checkTimeAndNotify();
+    
+}
+
+exports.createWindowTray = (windowAllClostCallback) => {
     // 确保路径和格式正确，建议使用 16x16 像素或 32x32 像素的图标
     const iconPath = path.join(__dirname, '../../build/icons/32x32.png')
 
     // 实例化 tray 对象，需要在托盘中显示的图标url作为参数
     const tray = new Tray(iconPath);
+
+    const { x, y, width, height } = tray.getBounds()
+    console.log('tray x, y: ', x, y, width, height);
+    this.listenRemind(tray)
     
     // 点击托盘图标的事件，根据窗口的显示状态切换主窗口的显示和隐藏
     tray.on('click', () => {
-        if(win.isVisible()){
-            win.hide()
-        }else{
-            console.log('win.show: ');
-            win.show()
-        }
+        let windows = BrowserWindow.getAllWindows();
+        windows.forEach(win => {
+            if(win.isVisible()){
+                win.hide()
+            }else{
+                console.log('win.show: ');
+                win.show()
+            }
+        })
+
     })
 
     const contextMenu = Menu.buildFromTemplate([
@@ -31,4 +69,8 @@ exports.createWindowTray = (win) => {
     // tray.setContextMenu(contextMenu)
     // 设置鼠标移到托盘中的图标上时显示的文本
     tray.setToolTip('这是一个小狗闹钟');
+
+    windowAllClostCallback.push(() => {
+        tray.destroy()
+    })
 }

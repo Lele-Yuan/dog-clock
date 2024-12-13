@@ -59,6 +59,7 @@
   },
   "scripts": {
     "start": "npx nodemon --watch index.js --exec electron .",
+    "dev": "electron .",
     "build-icon": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "build": "electron-builder",
     "build-release": "electron-builder --config --publish always",

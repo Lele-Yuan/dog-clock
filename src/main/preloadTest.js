@@ -3,11 +3,11 @@ const { contextBridge, ipcRenderer } = require('electron')
 const ipc = {
     render: {
         // From render to main.
-        send: ["mainWindow:close", "mainWindow:maximize", "mainWindow:minimize", 'mainWindow:loadUrl', "checkForUpdate", "isUpdateNow", "checkAppVersion"],
+        send: ["mainWindow:close", "mainWindow:maximize", "mainWindow:minimize", 'mainWindow:loadUrl', "mainWindow:getTheme", "mainWindow:closeRemind", "checkForUpdate", "isUpdateNow", "checkAppVersion"],
         // From main to render.
-        receive: ["updateAvailable", "message", "downloadProgress", "checking-for-update", "update-not-available", "isUpdateNow", "version"],
+        receive: ["updateAvailable", "message", "downloadProgress", "checking-for-update", "update-not-available", "isUpdateNow", "version", 'message:theme', 'message:something', "message:changeTheme"],
         // From render to main and back again.
-        sendReceive: []
+        sendReceive: ["mainWindow:changeTheme", "mainWindow:windowsCount"]
     }
 };
 contextBridge.exposeInMainWorld('electron', {
@@ -24,6 +24,12 @@ contextBridge.exposeInMainWorld('electron', {
         if (validChannels.includes(channel)) {
             // Deliberately strip event as it includes `sender` 
             ipcRenderer.on(`${channel}`, (event, ...args) => func(...args));
+        }
+    },
+    ipcRendereInvoke: (channel, args) => {
+        let validChannels = ipc.render.sendReceive;
+        if (validChannels.includes(channel)) {
+            return ipcRenderer.invoke(channel, args);
         }
     },
     doAThing: () => {

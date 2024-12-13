@@ -11,11 +11,20 @@
             margin: 0;
             padding: 0;
         }
+        body[data-theme="dark"] {
+            color: #fcfcfc;
+        }
     </style>
 
     <script>
         window.onload = () => {
             const { ipcRendereReceive, ipcRendererSend } = window.electron;
+
+            ipcRendereReceive('message:changeTheme', (theme) => {
+                console.log('message:changeTheme: ', theme);
+                document.body.dataset.theme = theme
+            })
+            
             if (ipcRendereReceive) {
                 document.getElementById('ipcRender-ready').innerText = 'true';
             }
@@ -54,7 +63,7 @@
     <!-- <webview src="https://juejin.cn/user/4476867080110957"></webview> -->
     <!-- <webview src="https://www.electronjs.org/zh/"></webview> -->
 
-    <div>
+    <div style="overflow: hidden;">
         <p>current app version: <span id="version"></span></p>
         <p>ipcRender is ready: <span id="ipcRender-ready"></span></p>
         <p id="text"></p>

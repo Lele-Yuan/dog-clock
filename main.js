@@ -1,8 +1,9 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, nativeTheme } = require('electron');
 const path = require('path');
 // const fs = require('fs');
 const isDev = import('electron-is-dev');
 const { autoUpdater } = require('electron-updater');
+const { themeColors } = require('./src/main/windowTheme');
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 
@@ -12,6 +13,7 @@ const createWindow = () => {
     win = new BrowserWindow({
         width: 802,
         height: 824,
+        backgroundColor: themeColors[nativeTheme.themeSource].backgroundColor,
         useContentSize: false,
         // frame: false,
         resizable: false,
