@@ -57,6 +57,10 @@ exports.createWindowMenus = () => {
             accelerator: 'CommandOrControl+alt+i'
         }]
     }];
+    // if (process.platform === 'darwin') {
+    //     menuTemplate.unshift({ label: '' })
+    // }
     const menu = Menu.buildFromTemplate(menuTemplate)
     Menu.setApplicationMenu(menu)
+    app.dock.setMenu(menu)
 }

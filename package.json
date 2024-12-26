@@ -1,7 +1,7 @@
 {
   "name": "dog-clock",
   "productName": "Dog-Clock",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "src/main/index.js",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
         "provider": "github",
         "owner": "Lele-Yuan",
         "repo": "dog-clock",
-        "token": "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",
+        "token": "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",
         "releaseType": "release"
       }
     ],
@@ -63,7 +63,7 @@
     "build-icon": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
     "build": "electron-builder",
     "build-release": "electron-builder --config --publish always",
-    "release": "cross-env GH_TOKEN=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 electron-builder",
+    "release": "cross-env GH_TOKEN=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 electron-builder",
     "server": "node server.js"
   },
   "devDependencies": {

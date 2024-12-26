@@ -3,7 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 const ipc = {
     render: {
         // From render to main.
-        send: ["mainWindow:close", "mainWindow:maximize", "mainWindow:minimize", 'mainWindow:loadUrl', "mainWindow:getTheme", "mainWindow:closeRemind", "checkForUpdate", "isUpdateNow", "checkAppVersion"],
+        send: ["mainWindow:close", "mainWindow:maximize", "mainWindow:minimize", 'mainWindow:loadUrl', "mainWindow:getTheme", "mainWindow:closeRemind", "mainWindow:contextMenu", "mainWindow:openModal", "mainWindow:openTrayNotification", "mainWindow:openMainNotification", "checkForUpdate", "isUpdateNow", "checkAppVersion"],
         // From main to render.
         receive: ["updateAvailable", "message", "downloadProgress", "checking-for-update", "update-not-available", "isUpdateNow", "version", 'message:theme', 'message:something', "message:changeTheme"],
         // From render to main and back again.

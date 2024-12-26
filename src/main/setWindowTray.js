@@ -1,6 +1,7 @@
-const { app, Menu, Tray, BrowserWindow } = require("electron");
+const { app, Menu, Tray, BrowserWindow, ipcMain } = require("electron");
 const path = require('path');
 const { createRemindWindow } = require('./remindWindow');
+const { iconPathLittle } = require("./constant");
 let remindWin;
 exports.listenRemind = (tray) => {
         
@@ -9,10 +10,10 @@ exports.listenRemind = (tray) => {
         const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
-        console.log('hours: ', hours, 'minutes: ', minutes, 'remindWin: ', remindWin);
-
+        
         // 检查当前时间是否为晚上8点（20:00）
         if (hours === 17 && minutes === 47 && !remindWin) {
+            console.log('hours: ', hours, 'minutes: ', minutes, 'remindWin: ', remindWin);
             const { x, y, width, height } = tray?.getBounds()
             console.log('createRemindWindow x, y: ', x, y); // 这里不清楚为啥是 x, y:  0 982
             remindWin = createRemindWindow(tray)
@@ -32,15 +33,27 @@ exports.listenRemind = (tray) => {
 }
 
 exports.createWindowTray = (windowAllClostCallback) => {
-    // 确保路径和格式正确，建议使用 16x16 像素或 32x32 像素的图标
-    const iconPath = path.join(__dirname, '../../build/icons/32x32.png')
-
+    
     // 实例化 tray 对象，需要在托盘中显示的图标url作为参数
-    const tray = new Tray(iconPath);
+    // 确保路径和格式正确，建议使用 16x16 像素到 32x32 像素的图标
+    const tray = new Tray(iconPathLittle);
 
     const { x, y, width, height } = tray.getBounds()
     console.log('tray x, y: ', x, y, width, height);
-    this.listenRemind(tray)
+    
+    this.listenRemind(tray) // 监听提醒时间，创建提醒窗口
+
+
+    ipcMain.on('mainWindow:openTrayNotification', (_, arg) => {
+        if (remindWin || !tray) return
+        const { x, width, height } = tray?.getBounds();
+        remindWin = createRemindWindow(tray)
+        remindWin.setPosition(x - (200 - width) / 2, height)
+    })
+    ipcMain.on('mainWindow:closeRemind', (_) => {
+        remindWin?.close();
+        remindWin = null;
+    });
     
     // 点击托盘图标的事件，根据窗口的显示状态切换主窗口的显示和隐藏
     tray.on('click', () => {

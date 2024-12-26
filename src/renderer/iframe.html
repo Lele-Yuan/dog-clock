@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
+    <link rel="stylesheet" href="./header.css">
+    <script src="./header.js"></script>
+    <style>
+        body,
+        html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .content {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 0 16px;
+        }
+
+        .iframe-webview {
+            display: flex;
+            flex: 1;
+        }
+
+        .iframe, .webview {
+            width: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <p>
+            加载 iframe 和 webview 控件，需要开启 <b><i>webPreferences.webviewTag: true</i></b> 配置
+        </p>
+
+        <hr>
+    
+        <div class="iframe-webview">
+            <div class="iframe">
+                <p>👇 这是一个 iframe</p>
+                <iframe src="https://juejin.cn/user/4476867080110957" frameborder="0" style="width:100%; height: 100%;"></iframe>
+            </div>
+            <div class="webview">
+                <p>👇 这是一个 webview</p>
+                <webview src="https://juejin.cn/user/4476867080110957" style="width:100%; height: 100%;">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

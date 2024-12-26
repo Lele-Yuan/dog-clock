@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World!</title>
+    <title>Hello World</title>
     <link rel="stylesheet" href="./header.css">
     <script src="./header.js"></script>
     <style>
@@ -30,16 +30,6 @@
         .main {
             padding: 0 16px;
         }
-
-        .iframe-webview {
-            display: flex;
-            flex: 1;
-        }
-
-        .iframe, .webview {
-            width: 50%;
-            padding: 10px;
-        }
     </style>
 </head>
 
@@ -53,21 +43,44 @@
     <div class="content">
         <div class="main">
             <h1>Hello World!</h1>
-            <p>
-                <button id="open-new-window">打开新窗口</button>
-                <button id="open-new-scheme">打开dumail窗口</button>
-                <a href="infoflow://APICenter?data=eyJBUElOYW1lIjoiQmRIaUpzLmFwcG5hdGl2ZS53ZWJ2aWV3LmxvYWRVUkwiLCJ2ZXJzaW9uIjoiMzAiLCJkYXRhIjp7InR5cGUiOiJzZXBhcmF0ZSIsImRlZmF1bHRTaXplIjoiMTEwMCw5MDAiLCJ1cmwiOiJodHRwczovL3hwcC5pbS5iYWlkdS5jb20vbWFpbC1oNS9tYWlsL2JkbWFpbC1mcm9udD9oaV9kZWZhdWx0c2l6ZT0xMTAwLDkwMCZjYWNoZV9zaXplPXRydWUmY2FjaGVfc2l6ZV9rZXk9ZHVFbWFpbHMmaGlfbmF2aV9zdHlsZT0yJmNhY2hlX3NpemVfa2V5PWR1RW1haWxzIn19">百度邮箱</a>
-                <button id="open-update-window">检测更新</button>
-                <button id="close-remind">关闭提醒</button>
-            </p>
             We are using Node.js <span id="node-version"></span>,
             Chromium <span id="chrome-version"></span>,
             and Electron <span id="electron-version"></span>.
             <p>
-                <button id="get-windows">打开了几个窗口</button><span class="windows-count"></span>
-                <div><i class="main-something"></i></div>
+                <h2>打开新窗口</h2>
+                <button id="open-modal-window">
+                    打开模态窗口
+                </button>
+                <button id="open-new-window" data-url="https://www.electronjs.org/zh/">
+                    打开新窗口加载网页
+                </button>
+                <button id="open-new-iframe" data-url="iframe.html">
+                    打开新窗口加载本地html，包含IFRAME
+                </button>
+                <a href="dog-clock://helloworld?width=1280&height=700&url=https://baidu.com">通过scheme打开新窗口</a>
+                <p></p>
+                <button id="open-new-scheme" data-url="infoflow://APICenter?data=eyJBUElOYW1lIjoiQmRIaUpzLmFwcG5hdGl2ZS53ZWJ2aWV3LmxvYWRVUkwiLCJ2ZXJzaW9uIjoiMzAiLCJkYXRhIjp7InR5cGUiOiJzZXBhcmF0ZSIsImRlZmF1bHRTaXplIjoiMTEwMCw5MDAiLCJ1cmwiOiJodHRwczovL3hwcC5pbS5iYWlkdS5jb20vbWFpbC1oNS9tYWlsL2JkbWFpbC1mcm9udD9oaV9kZWZhdWx0c2l6ZT0xMTAwLDkwMCZjYWNoZV9zaXplPXRydWUmY2FjaGVfc2l6ZV9rZXk9ZHVFbWFpbHMmaGlfbmF2aV9zdHlsZT0yJmNhY2hlX3NpemVfa2V5PWR1RW1haWxzIn19">
+                    打开dumail窗口infoflow://
+                </button>
+                <a href="infoflow://APICenter?data=eyJBUElOYW1lIjoiQmRIaUpzLmFwcG5hdGl2ZS53ZWJ2aWV3LmxvYWRVUkwiLCJ2ZXJzaW9uIjoiMzAiLCJkYXRhIjp7InR5cGUiOiJzZXBhcmF0ZSIsImRlZmF1bHRTaXplIjoiMTEwMCw5MDAiLCJ1cmwiOiJodHRwczovL3hwcC5pbS5iYWlkdS5jb20vbWFpbC1oNS9tYWlsL2JkbWFpbC1mcm9udD9oaV9kZWZhdWx0c2l6ZT0xMTAwLDkwMCZjYWNoZV9zaXplPXRydWUmY2FjaGVfc2l6ZV9rZXk9ZHVFbWFpbHMmaGlfbmF2aV9zdHlsZT0yJmNhY2hlX3NpemVfa2V5PWR1RW1haWxzIn19">百度邮箱</a>
+                <br>
             </p>
+            <hr>
             <p>
+                <h2>通知</h2>
+                <button id="open-new-notification">打开WEB消息通知</button>
+                <button id="open-main-notification">主进程消息通知</button>
+                <span id="output">Click it to see the effect in this interface.</span>
+
+                <p></p>
+
+                <button id="open-tray-notification">打开托盘通知</button>
+                <button id="close-remind">关闭托盘通知</button>
+            </p>
+            <p></p>
+            <hr>
+            <p>
+                <h2>主题</h2>
                 <label for="themechange">选择主题：</label>
                 <select name="themechange" id="themeChange">
                     <option value="system">跟随系统</option>
@@ -77,30 +90,54 @@
                 <button id="get-theme">获取当前主题</button>
                 <span class="theme"></span>
             </p>
-        </div>
-        <div class="iframe-webview">
-            <div class="iframe">
-                <p>👇 这是一个 iframe</p>
-                <iframe src="https://juejin.cn/user/4476867080110957" frameborder="0" style="width:100%; height: 100%;"></iframe>
-            </div>
-            <div class="webview">
-                <p>👇 这是一个 webview</p>
-                <webview src="https://juejin.cn/user/4476867080110957" style="width:100%; height: 100%;">
-            </div>
+            <hr>
+            <p>
+                <h2>其他</h2>
+                <button id="open-update-window">检测更新</button>
+                <button id="get-windows">打开了几个窗口</button><span class="windows-count"></span>
+                <div><i class="main-something"></i></div>
+            </p>
         </div>
     </div>
 
 </body>
 <script>
+    const openNotificationDom = document.getElementById('open-new-notification')
+    const openMainNotificationDom = document.getElementById('open-main-notification')
+    const outputDom = document.getElementById('output')
+    openNotificationDom.addEventListener('click', () => {
+        outputDom.innerText = window.Notification?.permission
+        new window.Notification(
+            '时间到!',
+            { body: '时间不早了，该下班了 🌛' }
+        ).onclick = () => {
+            outputDom.innerText = '收到，正在飞奔回家🏃'
+        }
+    })
+    openMainNotificationDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:openMainNotification')
+    })
+
+    const openTrayNotificationDom = document.getElementById('open-tray-notification')
+    openTrayNotificationDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:openTrayNotification')
+    })
+
     const { ipcRendererSend, ipcRendereReceive, ipcRendereInvoke } = window.electron
-    const openWindowButtonDom = document.getElementById('open-new-window')
-    const openSchemeButtonDom = document.getElementById('open-new-scheme')
-    openWindowButtonDom.addEventListener('click', () => {
-        ipcRendererSend('mainWindow:loadUrl', 'https://www.electronjs.org/zh/')
+
+    const openNewWindow = (event) => {
+        ipcRendererSend('mainWindow:loadUrl', event.target.dataset.url)
+    }
+    
+    const openModalDom = document.getElementById('open-modal-window')
+    openModalDom.addEventListener('click', () => {
+        ipcRendererSend('mainWindow:openModal')
     })
-    openSchemeButtonDom.addEventListener('click', () => {
-        ipcRendererSend('mainWindow:loadUrl', 'infoflow://APICenter?data=eyJBUElOYW1lIjoiQmRIaUpzLmFwcG5hdGl2ZS53ZWJ2aWV3LmxvYWRVUkwiLCJ2ZXJzaW9uIjoiMzAiLCJkYXRhIjp7InR5cGUiOiJzZXBhcmF0ZSIsImRlZmF1bHRTaXplIjoiMTEwMCw5MDAiLCJ1cmwiOiJodHRwczovL3hwcC5pbS5iYWlkdS5jb20vbWFpbC1oNS9tYWlsL2JkbWFpbC1mcm9udD9oaV9kZWZhdWx0c2l6ZT0xMTAwLDkwMCZjYWNoZV9zaXplPXRydWUmY2FjaGVfc2l6ZV9rZXk9ZHVFbWFpbHMmaGlfbmF2aV9zdHlsZT0yJmNhY2hlX3NpemVfa2V5PWR1RW1haWxzIn19')
-    })
+
+    document.getElementById('open-new-window').addEventListener('click', openNewWindow)
+    document.getElementById('open-new-iframe').addEventListener('click', openNewWindow)
+    document.getElementById('open-new-scheme').addEventListener('click', openNewWindow)
+
     const updateButtonDom = document.getElementById('open-update-window')
     updateButtonDom.addEventListener('click', () => {
         ipcRendererSend('mainWindow:loadUrl')
@@ -151,6 +188,12 @@
         document.querySelector('.main-something').innerHTML = 
             `主进程发来的消息：${message}</span>`
     })
+
+    window.addEventListener("contextmenu", (e) => {
+        console.log('e: ', e);
+        e.preventDefault(); 
+        ipcRendererSend('mainWindow:contextMenu', e)
+    });
 
 </script>
 </html>

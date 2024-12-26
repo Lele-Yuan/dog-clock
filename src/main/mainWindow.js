@@ -1,7 +1,6 @@
 const path = require('path');
 const { BrowserWindow, screen, nativeTheme } = require('electron');
 // const { checkUpdate } = require('./checkUpdate');
-const { initIpcMainListener } = require('./ipcMainListener');
 const { themeColors } = require('./windowTheme');
 
 exports.initMainWindow = () => {
@@ -26,15 +25,18 @@ exports.initMainWindow = () => {
             height, // 设置窗口宽高
             // x: initialX,
             // y: 0, // 设置窗口的初始位置为右上角
-            resizable: false, // 不允许用户调整窗口大小
+            // resizable: false, // 不允许用户调整窗口大小
+            minWidth: 800,
+            minHeight: 600,
+            // simpleFullscreen: true,
             backgroundColor: themeColors[nativeTheme.themeSource].backgroundColor, // 设置窗口的背景色
             // titleBarStyle: 'hiddenInset', // 隐藏标题栏
             // titleBarStyle: 'hidden',
             // trafficLightPosition: { x: 100, y: 100 },
-            frame: false, // 隐藏标题栏
+            // frame: true, // 隐藏标题栏
+            skipTaskbar: true,
             // fullscreenable: false,
-            // icon: path.join(__dirname, '../../build/icons/32x32.png'),
-            hiddenInMissionControl: true,
+            enableLargerThanScreen: true,
             // title: 'anc',
             // vibrancy: 'appearance-based',
             webPreferences: {
@@ -53,7 +55,4 @@ exports.initMainWindow = () => {
         }, 1000);
 
     }
-
-    // 主进程监听渲染进程的消息
-    initIpcMainListener(win);
 };
