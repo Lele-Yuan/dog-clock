@@ -1,5 +1,5 @@
 const { app } = require('electron');
-// const { checkUpdate } = require('./checkUpdate');
+const { checkUpdate } = require('./checkUpdate');
 const { createWindowMenus } = require('./setWindowMenu');
 const { appName, isMac, iconPath } = require('./constant');
 const { createWindowTray } = require('./setWindowTray');
@@ -32,7 +32,7 @@ app.whenReady().then(async () => {
 
     handleIpcMain(); // 注册全局通讯监听事件
     
-    // checkUpdate(); // 检查更新
+    checkUpdate(); // 检查更新
 })
 
 // 当所有窗口被关闭后退出应用，macOS 默认是隐藏应用，执行所有 windowAllClostCallback 回调

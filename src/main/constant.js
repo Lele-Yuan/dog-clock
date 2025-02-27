@@ -10,3 +10,4 @@ exports.iconPathLittle = path.join(__dirname, '../../build/icons/24x24.png')
 
 exports.remindWindowWidth = 200
 exports.remindWindowHeight = 32
+exports.remindTime = '17:42'

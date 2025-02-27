@@ -14,13 +14,14 @@ const message = {
 };
 
 autoUpdater.logger = require('electron-log');
-autoUpdater.logger.transports.file.level = 'info';
+// autoUpdater.logger.transports.file.level = 'info';
+autoUpdater.logger.transports.file.level = 'debug';
 
 // 这里是为了在本地做应用升级测试使用
 if (isDev) {
     autoUpdater.forceDevUpdateConfig = true;
-    console.log('__dirname: ', __dirname);
-    autoUpdater.updateConfigPath = path.join(__dirname, './dev-app-update.yml');
+    // console.log('__dirname: ', __dirname);
+    // autoUpdater.updateConfigPath = path.join(__dirname, './dev-app-update.yml');
 
     // 默认会自动下载新版本，如果不想自动下载，设置autoUpdater.autoDownload = false
     // 设置自动下载为false，这样就不会自动下载
@@ -29,6 +30,7 @@ if (isDev) {
         provider: 'generic',
         url: 'http://localhost:8060/'
     });
+    console.log(`本地测试更新${autoUpdater.currentConfig}`);
 }
 
 function checkUpdate() {
@@ -43,7 +45,7 @@ function checkUpdate() {
 
     // 检测是否需要更新
     autoUpdater.on('checking-for-update', () => {
-        console.log(`${message.checking}`)
+        console.log(`${message.checking}:`)
     });
 
     // 监听'error'事件
@@ -75,7 +77,7 @@ function checkUpdate() {
     autoUpdater.on('download-progress', (progress) => {
         // 直接把当前的下载进度发送给渲染进程即可，有渲染层自己选择如何做展示
         // win.webContents.send('downloadProgress', progress);
-        console.log(`下载进度：${progress}`);
+        console.log(`下载进度：${JSON.stringify(progress)}`);
     });
 
     // 监听'update-downloaded'事件，新版本下载完成时触发
@@ -87,7 +89,7 @@ function checkUpdate() {
         }).then((res) => {
             console.log('安装更新', res);
             // 退出并安装应用
-            // setTimeout(() => autoUpdater.quitAndInstall());
+            setTimeout(() => autoUpdater.quitAndInstall());
             // autoUpdater.quitAndInstall();
         });
     })

@@ -1,7 +1,7 @@
 const { app, Menu, Tray, BrowserWindow, ipcMain } = require("electron");
 const path = require('path');
 const { createRemindWindow } = require('./remindWindow');
-const { iconPathLittle } = require("./constant");
+const { iconPathLittle, remindTime } = require("./constant");
 let remindWin;
 exports.listenRemind = (tray) => {
         
@@ -10,9 +10,10 @@ exports.listenRemind = (tray) => {
         const now = new Date();
         const hours = now.getHours();
         const minutes = now.getMinutes();
+        const [remindHours, remindMinutes] = remindTime.split(':').map(Number);
         
-        // 检查当前时间是否为晚上8点（20:00）
-        if (hours === 17 && minutes === 47 && !remindWin) {
+        // 检查当前时间是否为提醒时间
+        if (hours === remindHours && minutes === remindMinutes && !remindWin) {
             console.log('hours: ', hours, 'minutes: ', minutes, 'remindWin: ', remindWin);
             const { x, y, width, height } = tray?.getBounds()
             console.log('createRemindWindow x, y: ', x, y); // 这里不清楚为啥是 x, y:  0 982
@@ -28,7 +29,9 @@ exports.listenRemind = (tray) => {
     // 设置一个定时器，每分钟检查一次时间
     timmer = setInterval(checkTimeAndNotify, 20000);
     // 立即调用一次，以防程序恰好在8点启动
-    checkTimeAndNotify();
+    setTimeout(() => {
+        checkTimeAndNotify();
+    }, 300);
     
 }
 
