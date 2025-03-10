@@ -17,6 +17,13 @@ autoUpdater.logger = require('electron-log');
 // autoUpdater.logger.transports.file.level = 'info';
 autoUpdater.logger.transports.file.level = 'debug';
 
+autoUpdater.setFeedURL({
+    provider: 'github',
+    owner: "'Lele-Yuan",
+    repo: "dog-clock",
+    token: process.env.GH_TOKEN, // 从环境变量中读取 Token
+});
+
 // 这里是为了在本地做应用升级测试使用
 if (isDev) {
     autoUpdater.forceDevUpdateConfig = true;
@@ -56,6 +63,10 @@ function checkUpdate() {
     // 检测到不需要更新时
     autoUpdater.on('update-not-available', () => {
         console.log(`${message.updateNotAva}`)
+        dialog.showMessageBox({
+            title: message.title,
+            message: message.updateNotAva,
+        })
     });
 
     // 监听'update-available'事件，发现有新版本时触发

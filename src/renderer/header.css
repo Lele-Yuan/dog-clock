@@ -5,7 +5,7 @@ body[data-theme="light"] {
 }
 body[data-theme="dark"] {
     .mac-control-buttons {
-        background: #292929;
+        background: #03174C;
     }
 }
 
@@ -13,7 +13,7 @@ body[data-theme="dark"] {
     display: flex;
     align-items: center;
     padding: 10px;
-    background: #BF1304;
+    background: #7583CA;
     -webkit-app-region: drag;
 }
 

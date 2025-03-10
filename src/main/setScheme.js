@@ -1,5 +1,5 @@
 const path = require('path');
-const { app } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const { protocol, scheme } = require("./constant");
 const { createWindow } = require("./createWindow");
 

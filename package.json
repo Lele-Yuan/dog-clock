@@ -1,7 +1,7 @@
 {
   "name": "dog-clock",
   "productName": "Dog-Clock",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "src/main/index.js",
   "description": "A simple electron app demo",
   "repository": {

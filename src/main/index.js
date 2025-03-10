@@ -43,6 +43,7 @@ app.on('window-all-closed', () => {
     windowAllClostCallback.forEach(cb => cb());
 
     // 关闭最后一个页面后退出
-    isMac ? app.dock.hide() : app.quit();
+    isMac && app.dock.hide()
+    app.quit()
     if (timmer) clearInterval(timmer);
 });

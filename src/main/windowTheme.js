@@ -3,9 +3,9 @@ exports.themeColors = {
         backgroundColor: '#f2f4f7'
     },
     dark: {
-        backgroundColor: '#292929'
+        backgroundColor: '#03174C'
     },
     system: {
-        backgroundColor: '#ef9aa3'
+        backgroundColor: '#8E97FD'
     }
 }
